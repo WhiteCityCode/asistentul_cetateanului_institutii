@@ -13,8 +13,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 		http
 			.authorizeRequests()
-				.antMatchers("/css/**", "/index").permitAll()		
-				.antMatchers("/user/**").hasRole("USER")			
+				.antMatchers("/css/**", "/api/**").permitAll()		
+				.antMatchers("/admin/**").hasRole("ADMIN")			
 				.and()
 			.formLogin()
 				.loginPage("/login").failureUrl("/login-error");	
@@ -24,6 +24,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
 		auth
 			.inMemoryAuthentication()
-				.withUser("demo").password("demo").roles("USER");
+				.withUser("demo").password("demo").roles("ADMIN");
 	}
 }
