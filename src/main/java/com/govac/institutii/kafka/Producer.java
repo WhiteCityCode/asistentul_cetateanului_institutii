@@ -13,43 +13,43 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class Producer {
-	
-	private static final Logger LOG = LoggerFactory.getLogger(Producer.class);
 
-	private final KafkaProducer<byte[], byte[]> producer;
-	
-	public Producer(Properties kafkaProperties) throws IOException {
-		producer = new KafkaProducer<byte[], byte[]>(kafkaProperties);				
-	}
-	
-	public void send(Message message) {
-		producer.send(new ProducerRecord<byte[], byte[]>(message.getTopic(), message.getKey(), message.getValue()), 
-				callBack(message));
-	}
-	
-	private Callback callBack(Message message) {
-		return new Callback() {
-			@Override
-			public void onCompletion(RecordMetadata metadata, Exception exception) {
-				if (exception != null) {
-					LOG.error("Failed to deliver message to Kafka {}", exception);
-				} else {
-					LOG.debug("Delivered message to Kafka: {}", message);
-				}
-			}
-		}; 
-	}
+    private static final Logger LOG = LoggerFactory.getLogger(Producer.class);
 
-	/**
+    private final KafkaProducer<byte[], byte[]> producer;
+
+    public Producer(Properties kafkaProperties) throws IOException {
+        producer = new KafkaProducer<byte[], byte[]>(kafkaProperties);
+    }
+
+    public void send(Message message) {
+        producer.send(new ProducerRecord<byte[], byte[]>(message.getTopic(), message.getKey(), message.getValue()),
+                callBack(message));
+    }
+
+    private Callback callBack(Message message) {
+        return new Callback() {
+            @Override
+            public void onCompletion(RecordMetadata metadata, Exception exception) {
+                if (exception != null) {
+                    LOG.error("Failed to deliver message to Kafka {}", exception);
+                } else {
+                    LOG.debug("Delivered message to Kafka: {}", message);
+                }
+            }
+        };
+    }
+
+    /**
      * Ensure the producer is closed when the JVM is shutdown
      */
     @SuppressWarnings("unused")
-	private void registerShutdownHook() {
+    private void registerShutdownHook() {
         Runtime.getRuntime().addShutdownHook(new Thread() {
             @Override
             public void run() {
-            	LOG.info("Closing KafkaProducer");
-                producer.close();                
+                LOG.info("Closing KafkaProducer");
+                producer.close();
             }
         });
     }
