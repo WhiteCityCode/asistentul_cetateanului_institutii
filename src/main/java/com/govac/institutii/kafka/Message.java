@@ -18,16 +18,18 @@ public class Message {
      * The key used by partitioner to compute the partition destination.
      */
     private final byte[] key;
-    
+
     /**
      * The topic this message should be sent on
      */
     private final String topic;
 
     /**
-     * Creates a Message from provided string value. This implementation will use the value as the key by default.
+     * Creates a Message from provided string value. This implementation will
+     * use the value as the key by default.
      *
-     * @param value of the message.
+     * @param value
+     *            of the message.
      * @return Message instance with both key and value set.
      */
     public static Message create(final String value, final String topic) {
@@ -35,10 +37,12 @@ public class Message {
         final byte[] bytes = value.getBytes(DEFAULT_CHARSET);
         return new Message(bytes, bytes, topic);
     }
-    
+
     /**
-     * @param key associated with the message which is used by partitioner.
-     * @param value the actual message value.
+     * @param key
+     *            associated with the message which is used by partitioner.
+     * @param value
+     *            the actual message value.
      */
     private Message(final byte[] key, final byte[] value, String topic) {
         notNull(value);
@@ -56,11 +60,11 @@ public class Message {
     }
 
     public String getTopic() {
-		return topic;
-	}
+        return topic;
+    }
 
-	@Override
+    @Override
     public String toString() {
-    	return new String(value, DEFAULT_CHARSET);
+        return new String(value, DEFAULT_CHARSET);
     }
 }

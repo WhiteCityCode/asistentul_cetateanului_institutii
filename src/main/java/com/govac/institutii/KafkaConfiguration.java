@@ -9,11 +9,11 @@ import org.springframework.core.io.ClassPathResource;
 
 @Configuration
 public class KafkaConfiguration {
-	
-	@Bean
+
+    @Bean
     public Properties kafkaProperties() throws IOException {
-		Properties props = new Properties();
-		props.load(new ClassPathResource("kafka.properties").getInputStream());		
+        Properties props = new Properties();
+        props.load(new ClassPathResource("kafka.properties").getInputStream());
         return props;
     }
 }
