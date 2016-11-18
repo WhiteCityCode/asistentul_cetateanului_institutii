@@ -1,0 +1,8 @@
+spring.datasource.url=jdbc:postgresql://localhost:5432/govac
+spring.datasource.username=yourusr
+spring.datasource.password=yourpw
+flyway.url=jdbc:postgresql://localhost:5432/govac
+flyway.user=yourusr
+flyway.password=yourpw
+flyway.schemas=govac
+flyway.locations=classpath:com.govac.institutii.dbmigrations
