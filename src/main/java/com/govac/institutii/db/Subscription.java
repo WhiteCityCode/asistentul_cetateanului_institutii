@@ -24,12 +24,12 @@ public class Subscription {
     @JoinColumn(name = "application_id")
     public Application app;
 
-    public Long subscribed;
+    public Long subscribedOn;
 
     public Subscription(User user, Application app, Long subscribedOn) {
         this.user = user;
         this.app = app;
-        this.subscribed = subscribedOn;
+        this.subscribedOn = subscribedOn;
     }
 
     Subscription() { // jpa only
