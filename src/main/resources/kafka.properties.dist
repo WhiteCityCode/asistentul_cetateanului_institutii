@@ -1,0 +1,7 @@
+bootstrap.servers=KAFKA_IP:9092
+key.serializer=org.apache.kafka.common.serialization.ByteArraySerializer
+value.serializer=org.apache.kafka.common.serialization.ByteArraySerializer 
+#This means the leader will wait for the full set of in-sync replicas to acknowledge the record. 
+#This guarantees that the record will not be lost as long as at least one in-sync replica remains alive. 
+#This is the strongest available guarantee
+acks=all
