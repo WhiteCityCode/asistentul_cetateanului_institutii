@@ -14,15 +14,11 @@ import com.govac.institutii.db.UserRepository;
 @RequestMapping("/api")
 public class UserRestController {
 	
-	private final UserRepository userRepo;
+	@Autowired
+	private UserRepository userRepo;
 
 	@RequestMapping(value = "/users", method = RequestMethod.GET)
     Collection<User> users() {
         return userRepo.findAll();
-	}
-	
-	@Autowired
-    UserRestController(UserRepository usrRepo) {
-	        this.userRepo = usrRepo;
 	}
 }
