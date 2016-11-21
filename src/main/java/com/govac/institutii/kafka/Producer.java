@@ -2,6 +2,7 @@ package com.govac.institutii.kafka;
 
 import java.io.IOException;
 import java.util.Properties;
+import java.util.concurrent.Future;
 
 import org.apache.kafka.clients.producer.Callback;
 import org.apache.kafka.clients.producer.KafkaProducer;
@@ -22,8 +23,8 @@ public class Producer {
         producer = new KafkaProducer<byte[], byte[]>(kafkaProperties);
     }
 
-    public void send(Message message) {
-        producer.send(new ProducerRecord<byte[], byte[]>(message.getTopic(), message.getKey(), message.getValue()),
+    public Future<RecordMetadata> send(Message message) {
+        return producer.send(new ProducerRecord<byte[], byte[]>(message.getTopic(), message.getKey(), message.getValue()),
                 callBack(message));
     }
 
