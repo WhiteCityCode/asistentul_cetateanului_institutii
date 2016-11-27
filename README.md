@@ -10,6 +10,10 @@ Aplicația este scrisă în Java cu Spring Boot. Pentru împachetare/rulare este
 
 Aplicația așteaptă ca un fișier `src/main/resources/application.properties` să fie prezent și să conțină datele de configurare ale aplicației. Fișierul poate fi obținut prin redenumirea fișierului `src/main/resources/application.properties.dist` și editarea conținutului cu date de configurare reale pentru bazele de date.
 
+## Securitate
+
+Pentru accesarea endpointurilor API-ului ese necesar un token JWT care se poate obtine la ruta `/api/auth` postand un obiect json cu `email` si `password` avand drept conditie aceea ca valoarea campului email sa fie la fel cu adresa de email a unui user din DB. Cu acest token se pot accesa rutele API-ului in conformitate cu rolurile.
+
 ## Contribuții
 
 1. înscriere pe [portalul voluntarilor](https://voluntari.ithub.gov.ro/) și completarea profilului
