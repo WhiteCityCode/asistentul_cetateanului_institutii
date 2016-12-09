@@ -60,6 +60,9 @@ public class AuthRestController {
 
         // Reload password post-security so we can generate token
         final JwtUser userDetails = (JwtUser) userDetailsService.loadUserByUsername(authenticationRequest.getEmail());
+        if (null == userDetails)
+        	return ResponseEntity.badRequest().body(null);
+        
         logger.info("Generating token for " + userDetails.getEmail() + " and device " + device.toString());
         final String token = jwtTokenUtil.generateToken(userDetails, device);
 

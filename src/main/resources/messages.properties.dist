@@ -1,0 +1,10 @@
+error.provider.name.notblank=Numele furnizorului nu poate fi un camp gol
+error.provider.url.notblank=Adresa web a furnizorului nu poate fi un camp gol
+error.provider.url.url=Adresa web a furnizorului trebuie sa fie un URL valid
+error.user.cnp.notblank=CNP-ul nu poate fi un camp gol
+error.user.cnp.size=CNP-ul trebuie sa aiba 13 caractere
+error.user.email.notblank=Campul email nu poate fi gol
+error.user.email.emai=Campul email trebuie sa contina o adresa de posta electronica valida
+error.user.phone.notblank=Este nevoie de un telefon de contact
+error.user.firstname.notblank=Campul prenume nu poate fi gol
+error.user.lastname.notblank=Campul nume nu poate fi gol

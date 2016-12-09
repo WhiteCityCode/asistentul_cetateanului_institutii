@@ -59,5 +59,8 @@ public class JwtUser implements UserDetails {
 	public String getEmail() {
 		return usr.getEmail();
 	}
-
+	
+	public User getUser() {
+		return this.usr;
+	}
 }
