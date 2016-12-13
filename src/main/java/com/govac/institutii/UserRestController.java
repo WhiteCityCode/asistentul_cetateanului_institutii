@@ -21,16 +21,18 @@ import com.govac.institutii.db.UserRepository;
 import com.govac.institutii.security.JwtTokenUtil;
 import com.govac.institutii.security.JwtUser;
 import com.govac.institutii.security.JwtUserDetailsService;
+import com.govac.institutii.validation.UserAdminDTO;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
 @RequestMapping("/api/")
 public class UserRestController {
-	
-	@Autowired
-	private UserRepository userRepo;
 
-	
-	@Value("${jwt.header}")
+    @Autowired
+    private UserRepository userRepo;
+
+    @Value("${jwt.header}")
     private String tokenHeader;
 
     @Autowired
@@ -39,26 +41,39 @@ public class UserRestController {
     @Autowired
     private JwtUserDetailsService userDetailsService;
 
-	@RequestMapping(value = "users", method = RequestMethod.GET)
-	@PreAuthorize("hasRole('ADMIN')")
-	@ResponseBody
+    @RequestMapping(value = "users", method = RequestMethod.GET)
+    @PreAuthorize("hasRole('ADMIN')")
+    @ResponseBody
     public Page<User> users(
-    		@RequestParam(value = "page", defaultValue="0") int page, 
-    		@RequestParam(value = "size", defaultValue="20") int size) {
-        return userRepo.findAll(new PageRequest(page,size));
-	}
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "20") int size) {
+        return userRepo.findAll(new PageRequest(page, size));
+    }
+    
+    @RequestMapping(value = "users", method = RequestMethod.POST)
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> createUser(
+            @RequestBody @Validated UserAdminDTO user) {
+        User toSaveUser = new User(
+                user.cnp, user.email, user.firstName, user.lastName, user.phone
+        );
+        toSaveUser.setRole(user.role);
+        User savedUser = userRepo.save(toSaveUser);
+        return ResponseEntity.ok(savedUser);
+    }
 
     @RequestMapping(value = "user", method = RequestMethod.GET)
     public ResponseEntity<?> getAuthenticatedUser(HttpServletRequest request) {
         String token = request.getHeader(tokenHeader);
         Optional<String> email = jwtTokenUtil.getEmailFromToken(token);
         return email
-        	.map((e) ->  {
-        		JwtUser usr = (JwtUser) userDetailsService.loadUserByUsername(e);
-        		if (null == usr)
-        			return ResponseEntity.badRequest().body(null);
-        		return ResponseEntity.ok(usr);
-        	})
-        	.orElse(ResponseEntity.badRequest().body(null));
+                .map((e) -> {
+                    JwtUser usr = (JwtUser) userDetailsService.loadUserByUsername(e);
+                    if (null == usr) {
+                        return ResponseEntity.badRequest().body(null);
+                    }
+                    return ResponseEntity.ok(usr);
+                })
+                .orElse(ResponseEntity.badRequest().body(null));
     }
 }

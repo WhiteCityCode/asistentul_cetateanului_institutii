@@ -16,19 +16,31 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.govac.institutii.db.ProviderRepository;
+import com.govac.institutii.db.User;
+import com.govac.institutii.db.UserRepository;
 import com.govac.institutii.security.JwtTokenUtil;
 import com.govac.institutii.security.JwtUser;
 import com.govac.institutii.security.JwtUserDetailsService;
-import org.springframework.validation.BindingResult;
+import com.govac.institutii.validation.MessageDTO;
+import com.govac.institutii.validation.MessageType;
+import com.govac.institutii.validation.ProviderAdminDTO;
+import java.util.Locale;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
 @RequestMapping("/api/providers")
 public class ProviderRestController {
+    @Autowired
+    private MessageSource msgSource;
 
     @Autowired
     private ProviderRepository providerRepo;
+    
+    @Autowired
+    private UserRepository userRepo;
 
     @Value("${jwt.header}")
     private String tokenHeader;
@@ -73,10 +85,67 @@ public class ProviderRestController {
     
     @RequestMapping(value = "", method = RequestMethod.POST)
     @PreAuthorize("hasRole('ADMIN') || hasRole('PROVIDER')")
-    public Provider createProvider(
-            @RequestBody @Validated Provider provider,
-            BindingResult result){
-        provider = providerRepo.save(provider);
-        return provider;
+    public ResponseEntity<?> createProviderAsAdmin(
+            @RequestBody @Validated ProviderAdminDTO provider,
+            HttpServletRequest request){
+        String token = request.getHeader(tokenHeader);
+        Optional<String> email = jwtTokenUtil.getEmailFromToken(token);
+        if (!email.isPresent()) {
+            return ResponseEntity.badRequest().body(
+                    new MessageDTO(
+                            MessageType.ERROR, 
+                            translate("error.provider.admin.nojwt")
+                    )
+            );
+        }
+        JwtUser usr = (JwtUser) userDetailsService
+                .loadUserByUsername(email.get());
+        if (null == usr) {
+            return ResponseEntity.badRequest().body(
+                    new MessageDTO(
+                            MessageType.ERROR,
+                            translate("error.provider.admin.nojwt")
+                    )
+            );
+        }
+        Boolean isAdmin = usr.getUser().getRole().equals("ROLE_ADMIN");
+        
+        if (null == provider.admin && isAdmin) {
+            return ResponseEntity.badRequest().body(
+                    new MessageDTO(
+                            MessageType.ERROR,
+                            translate("error.provider.admin.notnull")
+                    )
+            );
+        }
+        if (null != provider.admin && isAdmin) {
+            Optional<User> loadedAdmin = userRepo.findByIdAndRole(
+                    provider.admin, 
+                    "ROLE_PROVIDER"
+            );
+            if (!loadedAdmin.isPresent())
+                return ResponseEntity.badRequest().body(
+                        new MessageDTO(
+                                MessageType.ERROR, 
+                                translate("error.provider.admin.noentity")
+                        )
+                );
+            Provider toSaveProvider = new Provider(
+                    loadedAdmin.get(), provider.name, provider.url
+            );
+            Provider savedProvider = providerRepo.save(toSaveProvider);
+            return ResponseEntity.ok(savedProvider);
+        }
+        
+        Provider toSaveProvider = new Provider(
+                usr.getUser(), provider.name, provider.url
+        );
+        Provider savedProvider = providerRepo.save(toSaveProvider);
+        return ResponseEntity.ok(savedProvider);
     }
+    
+    private String translate(String m) {
+        Locale currentLocale = LocaleContextHolder.getLocale();
+        return msgSource.getMessage(m, null, currentLocale);
+    } 
 }

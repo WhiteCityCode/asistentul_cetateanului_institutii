@@ -1,6 +1,9 @@
 error.provider.name.notblank=Numele furnizorului nu poate fi un camp gol
 error.provider.url.notblank=Adresa web a furnizorului nu poate fi un camp gol
 error.provider.url.url=Adresa web a furnizorului trebuie sa fie un URL valid
+error.provider.admin.noentity=ID admin incorect
+error.provider.admin.nojwt=Userul autentificat nu este un provider
+error.provider.admin.notnull=Adminul providerului nu poate fi nul
 error.user.cnp.notblank=CNP-ul nu poate fi un camp gol
 error.user.cnp.size=CNP-ul trebuie sa aiba 13 caractere
 error.user.email.notblank=Campul email nu poate fi gol
@@ -8,3 +11,4 @@ error.user.email.emai=Campul email trebuie sa contina o adresa de posta electron
 error.user.phone.notblank=Este nevoie de un telefon de contact
 error.user.firstname.notblank=Campul prenume nu poate fi gol
 error.user.lastname.notblank=Campul nume nu poate fi gol
+error.user.role.regex=Campul rol trebuie sa fie unul dintre ROLE_ADMIN, ROLE_PROVIDER
