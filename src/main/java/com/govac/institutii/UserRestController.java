@@ -65,7 +65,7 @@ public class UserRestController {
     @RequestMapping(value = "user", method = RequestMethod.GET)
     public ResponseEntity<?> getAuthenticatedUser(HttpServletRequest request) {
         String token = request.getHeader(tokenHeader);
-        Optional<String> email = jwtTokenUtil.getEmailFromToken(token);
+        Optional<String> email = jwtTokenUtil.getSubjectFromToken(token);
         return email
                 .map((e) -> {
                     JwtUser usr = (JwtUser) userDetailsService.loadUserByUsername(e);

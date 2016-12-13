@@ -38,7 +38,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
     	) throws ServletException, IOException {
     	
         String authToken = request.getHeader(this.tokenHeader);
-        Optional<String> email = jwtTokenUtil.getEmailFromToken(authToken);
+        Optional<String> email = jwtTokenUtil.getSubjectFromToken(authToken);
         email.ifPresent((e) -> {
         	
         	logger.info("Checking token for " + e);        	

@@ -20,16 +20,16 @@ public class JwtTokenUtil implements Serializable {
 
     private static final long serialVersionUID = -3301605591108950415L;
 
-    static final String CLAIM_KEY_ISSUER="iss";
-    static final String CLAIM_KEY_EMAIL= "sub";
-    static final String CLAIM_KEY_AUDIENCE = "aud";
-    static final String CLAIM_KEY_CREATED = "iat";
-    static final String CLAIM_KEY_EXPIRES = "exp";
+    public static final String CLAIM_KEY_ISSUER="iss";
+    public static final String CLAIM_KEY_SUBJECT= "sub";
+    public static final String CLAIM_KEY_AUDIENCE = "aud";
+    public static final String CLAIM_KEY_CREATED = "iat";
+    public static final String CLAIM_KEY_EXPIRES = "exp";
 
-    private static final String AUDIENCE_UNKNOWN = "unknown";
-    private static final String AUDIENCE_WEB = "web";
-    private static final String AUDIENCE_MOBILE = "mobile";
-    private static final String AUDIENCE_TABLET = "tablet";    
+    public static final String AUDIENCE_UNKNOWN = "unknown";
+    public static final String AUDIENCE_WEB = "web";
+    public static final String AUDIENCE_MOBILE = "mobile";
+    public static final String AUDIENCE_TABLET = "tablet";    
  
     private final Log logger = LogFactory.getLog(this.getClass());
 
@@ -39,10 +39,10 @@ public class JwtTokenUtil implements Serializable {
     @Value("${jwt.expiration}")
     private Long expiration;
 
-    public Optional<String> getEmailFromToken(String token) {
+    public Optional<String> getSubjectFromToken(String token) {
         final Optional<Map<String, Object>> claims = getClaimsFromToken(token);
         return claims.map((c) -> {
-        	return (String) c.get(CLAIM_KEY_EMAIL);
+        	return (String) c.get(CLAIM_KEY_SUBJECT);
         });
     }
 
@@ -78,11 +78,11 @@ public class JwtTokenUtil implements Serializable {
         return Optional.of(claims);
     }
     
-    private long generateCreationDate() {
+    public long generateCreationDate() {
         return (System.currentTimeMillis() / 1000L);
     }
 
-    private long generateExpirationDate() {
+    public long generateExpirationDate() {
         return (System.currentTimeMillis() / 1000L)  + expiration;
     }
 
@@ -93,7 +93,7 @@ public class JwtTokenUtil implements Serializable {
         	.orElse(false);
     }
 
-    private String generateAudience(Device device) {
+    public String generateAudience(Device device) {
         String audience = AUDIENCE_UNKNOWN;
         if (device.isNormal()) {
             audience = AUDIENCE_WEB;
@@ -115,7 +115,7 @@ public class JwtTokenUtil implements Serializable {
     public String generateToken(JwtUser userDetails, Device device) {
         Map<String, Object> claims = new HashMap<>();
         claims.put(CLAIM_KEY_ISSUER, "GovacInstitutii");
-        claims.put(CLAIM_KEY_EMAIL, userDetails.getEmail());
+        claims.put(CLAIM_KEY_SUBJECT, userDetails.getEmail());
         claims.put(CLAIM_KEY_AUDIENCE, generateAudience(device));
         claims.put(CLAIM_KEY_CREATED, generateCreationDate());
         claims.put(CLAIM_KEY_EXPIRES, generateExpirationDate());
@@ -144,7 +144,7 @@ public class JwtTokenUtil implements Serializable {
     }
 
     public Boolean validateToken(String token, JwtUser user) {
-        final Optional<String> email = getEmailFromToken(token);
+        final Optional<String> email = getSubjectFromToken(token);
         return email
         	.map((e) -> {
         		return e.equals(user.getEmail()) && !isTokenExpired(token);
