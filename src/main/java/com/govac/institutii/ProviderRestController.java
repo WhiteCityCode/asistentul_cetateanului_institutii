@@ -85,7 +85,7 @@ public class ProviderRestController {
     
     @RequestMapping(value = "", method = RequestMethod.POST)
     @PreAuthorize("hasRole('ADMIN') || hasRole('PROVIDER')")
-    public ResponseEntity<?> createProviderAsAdmin(
+    public ResponseEntity<?> createProvider(
             @RequestBody @Validated ProviderAdminDTO provider,
             HttpServletRequest request){
         String token = request.getHeader(tokenHeader);
