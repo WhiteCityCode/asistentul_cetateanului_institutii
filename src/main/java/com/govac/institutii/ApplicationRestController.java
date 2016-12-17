@@ -30,6 +30,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.govac.institutii.security.JwtTokenUtil;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 @RestController
 @RequestMapping("/api/applications")
@@ -51,6 +53,8 @@ public class ApplicationRestController {
 
     @Autowired
     private JwtUserDetailsService userDetailsService;
+    
+    private final Log logger = LogFactory.getLog(this.getClass());
     
     @RequestMapping(value = "", method = RequestMethod.GET)
     @PreAuthorize("hasRole('ADMIN') || hasRole('PROVIDER')")
@@ -95,7 +99,7 @@ public class ApplicationRestController {
             return ResponseEntity.badRequest().body(
                     new MessageDTO(
                             MessageType.ERROR,
-                            translate("error.application.provider.nojwt")
+                            translate("error.application.application.nojwt")
                     )
             );
         }
@@ -105,7 +109,7 @@ public class ApplicationRestController {
             return ResponseEntity.badRequest().body(
                     new MessageDTO(
                             MessageType.ERROR,
-                            translate("error.application.provider.nojwt")
+                            translate("error.application.application.nojwt")
                     )
             );
         }
@@ -134,14 +138,16 @@ public class ApplicationRestController {
         // token claims
         Map<String, Object> claims = new HashMap<>();
         claims.put(JwtTokenUtil.CLAIM_KEY_ISSUER, "GovacInstitutii");
-        claims.put(JwtTokenUtil.CLAIM_KEY_SUBJECT, app.provider);
+        claims.put(JwtTokenUtil.CLAIM_KEY_SUBJECT, app.provider.toString());
         claims.put(JwtTokenUtil.CLAIM_KEY_AUDIENCE, JwtTokenUtil.AUDIENCE_WEB);
         claims.put(JwtTokenUtil.CLAIM_KEY_CREATED, jwtTokenUtil.generateCreationDate());
         claims.put(JwtTokenUtil.CLAIM_KEY_EXPIRES, jwtTokenUtil.generateExpirationDate());
+        logger.info("Generating token for app");
+        logger.info(claims);
         Application toSaveApp = new Application(
                 loadedProvider, app.name, app.description, 
                 jwtTokenUtil.generateToken(claims), 
-                app.requirements.toString()
+                app.requirements
         );
         Application savedApp = appRepo.save(toSaveApp);
         return ResponseEntity.ok(savedApp);

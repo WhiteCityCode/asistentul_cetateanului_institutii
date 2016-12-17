@@ -1,6 +1,9 @@
 spring.datasource.url=jdbc:postgresql://localhost:5432/govac
 spring.datasource.username=yourusr
 spring.datasource.password=yourpw
+spring.jpa.database-platform=com.govac.institutii.db.JSONBPostgreSQLDialect
+spring.jpa.show-sql=true
+spring.jpa.hibernate.ddl-auto=update
 flyway.url=${spring.datasource.url}
 flyway.user=${spring.datasource.username}
 flyway.password=${spring.datasource.password}
