@@ -23,6 +23,6 @@ public class UserAdminDTO {
     @NotBlank(message = "error.user.lastname.notblank")
     public String lastName;
     
-    @Pattern(regexp="/^ROLE_ADMIN|ROLE_PROVIDER$/", message = "error.user.role.regex")
+    @Pattern(regexp="^ROLE\\_ADMIN|ROLE\\_PROVIDER$", message = "error.user.role.regex")
     public String role;
 }

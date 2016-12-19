@@ -142,8 +142,6 @@ public class ApplicationRestController {
         claims.put(JwtTokenUtil.CLAIM_KEY_AUDIENCE, JwtTokenUtil.AUDIENCE_WEB);
         claims.put(JwtTokenUtil.CLAIM_KEY_CREATED, jwtTokenUtil.generateCreationDate());
         claims.put(JwtTokenUtil.CLAIM_KEY_EXPIRES, jwtTokenUtil.generateExpirationDate());
-        logger.info("Generating token for app");
-        logger.info(claims);
         Application toSaveApp = new Application(
                 loadedProvider, app.name, app.description, 
                 jwtTokenUtil.generateToken(claims), 

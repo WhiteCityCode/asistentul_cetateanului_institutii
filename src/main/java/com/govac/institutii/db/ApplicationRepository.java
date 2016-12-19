@@ -8,8 +8,8 @@ import org.springframework.data.repository.query.Param;
 
 public interface ApplicationRepository 
         extends PagingAndSortingRepository<Application, Long>{
-    @Query("SELECT a FROM Application AS a LEFT JOIN a.provider AS p "
-            + "LEFT JOIN p.admin AS a WHERE a.email = :user_email")
+    @Query("SELECT app FROM Application AS app LEFT JOIN app.provider AS p "
+            + "LEFT JOIN p.admin AS adm WHERE adm.email = :user_email")
     Page<Application> findByAdminEmail(
             @Param("user_email") String email, 
             Pageable pageable

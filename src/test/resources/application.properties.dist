@@ -6,6 +6,11 @@ flyway.user=yourusr
 flyway.password=yourpw
 flyway.schemas=govac
 flyway.locations=classpath:com.govac.institutii.dbmigrations
+jwt.header=Authorization
+jwt.secret=mySecret
+jwt.expiration=604800
+jwt.route.auth=auth
+jwt.route.refresh=refresh
 
 #Kafka consumer properties
 zookeeper.connect=ZOOKEEPER_IP:2181

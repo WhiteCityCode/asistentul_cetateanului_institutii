@@ -90,6 +90,7 @@ public class User implements Serializable {
         this.firstName = firstName;
         this.lastName = lastName;
         this.phone = phone;
+        this.role = "ROLE_USER";
     }
 
     User() { // jpa only

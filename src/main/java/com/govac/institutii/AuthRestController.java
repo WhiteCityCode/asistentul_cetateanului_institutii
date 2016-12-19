@@ -29,41 +29,42 @@ import com.govac.institutii.security.JwtUserDetailsService;
 @RestController
 @RequestMapping("/api/")
 public class AuthRestController {
-	
-	@Value("${jwt.header}")
+
+    @Value("${jwt.header}")
     private String tokenHeader;
 
 //    @Autowired
 //    private AuthenticationManager authenticationManager;
-
     @Autowired
     private JwtTokenUtil jwtTokenUtil;
 
     @Autowired
     private JwtUserDetailsService userDetailsService;
-    
+
     private final Log logger = LogFactory.getLog(this.getClass());
 
     @RequestMapping(value = "${jwt.route.auth}", method = RequestMethod.POST)
     public ResponseEntity<?> createAuthenticationToken(
-    	@RequestBody JwtAuthenticationRequest authenticationRequest, 
-    	Device device) throws AuthenticationException {
+            @RequestBody JwtAuthenticationRequest authenticationRequest,
+            Device device) throws AuthenticationException {
 
         // For later on, if GovIT Auth not ready
-		//        final Authentication authentication = authenticationManager.authenticate(
-		//                new UsernamePasswordAuthenticationToken(
-		//                        authenticationRequest.getEmail(),
-		//                        authenticationRequest.getPassword()
-		//                )
-		//        );
-		//        SecurityContextHolder.getContext().setAuthentication(authentication);
-
+        //        final Authentication authentication = authenticationManager.authenticate(
+        //                new UsernamePasswordAuthenticationToken(
+        //                        authenticationRequest.getEmail(),
+        //                        authenticationRequest.getPassword()
+        //                )
+        //        );
+        //        SecurityContextHolder.getContext().setAuthentication(authentication);
         // Reload password post-security so we can generate token
-        final JwtUser userDetails = (JwtUser) userDetailsService.loadUserByUsername(authenticationRequest.getEmail());
-        if (null == userDetails)
-        	return ResponseEntity.badRequest().body(null);
-        
-        logger.info("Generating token for " + userDetails.getEmail() + " and device " + device.toString());
+        final JwtUser userDetails = (JwtUser) userDetailsService
+                .loadUserByUsername(authenticationRequest.getEmail());
+        if (null == userDetails) {
+            return ResponseEntity.badRequest().body(null);
+        }
+
+        logger.info("Generating token for " + userDetails.getEmail() 
+                + " and device " + device.toString());
         final String token = jwtTokenUtil.generateToken(userDetails, device);
 
         // Return the token
@@ -71,13 +72,18 @@ public class AuthRestController {
     }
 
     @RequestMapping(value = "${jwt.route.refresh}", method = RequestMethod.GET)
-    public ResponseEntity<?> refreshAndGetAuthenticationToken(HttpServletRequest request) {
+    public ResponseEntity<?> refreshAndGetAuthenticationToken(
+            HttpServletRequest request
+    ) {
         String token = request.getHeader(tokenHeader);
-        if (!jwtTokenUtil.canTokenBeRefreshed(token))
-			return ResponseEntity.badRequest().body(null);
+        if (!jwtTokenUtil.canTokenBeRefreshed(token)) {
+            return ResponseEntity.badRequest().body(null);
+        }
         Optional<String> refr = jwtTokenUtil.refreshToken(token);
         return refr
-        	.map((r) -> {return ResponseEntity.ok(new JwtAuthenticationResponse(r));})
-        	.orElse(ResponseEntity.badRequest().body(null));
+                .map((r) -> {
+                    return ResponseEntity.ok(new JwtAuthenticationResponse(r));
+                })
+                .orElse(ResponseEntity.badRequest().body(null));
     }
 }

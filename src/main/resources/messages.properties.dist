@@ -1,3 +1,10 @@
+error.application.requirements.notnull=Cerintele aplicatiei trebuie specificate
+error.application.description.notblank=Descrierea aplicatiei nu poate fi un camp gol
+error.application.name.notblank=Numele aplicatiei nu poate fi un camp gol
+error.application.provider.notnull=Aplicatia necesita un furniozor
+error.application.provider.ownermismatch=Nu sunteti administrator pentru furnizorul aplicatiei
+error.application.provider.noentity=Furnizorul aplicatiei nu poate fi identificat
+error.application.application.nojwt=Userul autentificat nu este un provider
 error.provider.name.notblank=Numele furnizorului nu poate fi un camp gol
 error.provider.url.notblank=Adresa web a furnizorului nu poate fi un camp gol
 error.provider.url.url=Adresa web a furnizorului trebuie sa fie un URL valid
