@@ -11,6 +11,10 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "users")
 public class User implements Serializable {
+    
+    public static final String ROLE_ADMIN="ROLE_ADMIN";
+    public static final String ROLE_PROVIDER="ROLE_PROVIDER";
+    public static final String ROLE_USER="ROLE_USER";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -90,9 +94,9 @@ public class User implements Serializable {
         this.firstName = firstName;
         this.lastName = lastName;
         this.phone = phone;
-        this.role = "ROLE_USER";
+        this.role = ROLE_USER;
     }
 
-    User() { // jpa only
+    public User() { // jpa only
     }
 }

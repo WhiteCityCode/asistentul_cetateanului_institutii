@@ -4,6 +4,7 @@ import com.govac.institutii.db.Application;
 import com.govac.institutii.db.ApplicationRepository;
 import com.govac.institutii.db.Provider;
 import com.govac.institutii.db.ProviderRepository;
+import com.govac.institutii.db.User;
 import com.govac.institutii.security.JwtTokenUtil;
 import com.govac.institutii.security.JwtUser;
 import com.govac.institutii.security.JwtUserDetailsService;
@@ -65,14 +66,14 @@ public class ApplicationRestController {
         String token = request.getHeader(tokenHeader);
         Optional<String> email = jwtTokenUtil.getSubjectFromToken(token);
         return email
-                .map((e) -> {
+                .map((String e) -> {
                     JwtUser usr = (JwtUser) userDetailsService
                             .loadUserByUsername(e);
                     if (null == usr) {
                         return ResponseEntity.status(403).body(null);
                     }
 
-                    if (usr.getUser().getRole().equals("ROLE_ADMIN")) {
+                    if (usr.getUser().getRole().equals(User.ROLE_ADMIN)) {
                         return ResponseEntity.ok(
                                 appRepo.findAll(
                                         new PageRequest(page, size)
@@ -113,7 +114,7 @@ public class ApplicationRestController {
                     )
             );
         }
-        Boolean isAdmin = usr.getUser().getRole().equals("ROLE_ADMIN");
+        Boolean isAdmin = usr.getUser().getRole().equals(User.ROLE_ADMIN);
         
         Provider loadedProvider = providerRepo.findOne(app.provider);
         if (null == loadedProvider) {
@@ -137,7 +138,7 @@ public class ApplicationRestController {
         
         // token claims
         Map<String, Object> claims = new HashMap<>();
-        claims.put(JwtTokenUtil.CLAIM_KEY_ISSUER, "GovacInstitutii");
+        claims.put(JwtTokenUtil.CLAIM_KEY_ISSUER, Application.TOKEN_ISSUER);
         claims.put(JwtTokenUtil.CLAIM_KEY_SUBJECT, app.provider.toString());
         claims.put(JwtTokenUtil.CLAIM_KEY_AUDIENCE, JwtTokenUtil.AUDIENCE_WEB);
         claims.put(JwtTokenUtil.CLAIM_KEY_CREATED, jwtTokenUtil.generateCreationDate());

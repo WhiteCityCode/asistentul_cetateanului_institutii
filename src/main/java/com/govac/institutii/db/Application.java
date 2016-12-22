@@ -17,6 +17,8 @@ import org.hibernate.annotations.TypeDef;
 @TypeDef(name = "jsonb", typeClass = JSONBUserType.class, parameters = {
     @Parameter(name = JSONBUserType.CLASS, value = "java.util.List")})
 public class Application {
+    
+    public static final String TOKEN_ISSUER = "GovacInstitutii";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -42,8 +44,8 @@ public class Application {
         this.tkn = tkn;
         this.requirements = reqs;
     }
-
-    Application() { // jpa only
+    
+    public Application() { // jpa only
     }
 
     public Long getId() {
